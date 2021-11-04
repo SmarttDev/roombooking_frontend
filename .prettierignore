@@ -1,0 +1,9 @@
+.next
+.vscode
+docs
+node_modules
+public
+build
+dist
+res
+coverage

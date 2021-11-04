@@ -1,0 +1,49 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  // to enable features such as async/await
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
+  // We don't want to lint generated files nor node_modules, but we want to lint .prettierrc.js (ignored by default by eslint)
+  "ignorePatterns": [
+    "node_modules/*",
+    ".next/*",
+    ".out/*",
+    "tailwind.config.js",
+    "!.prettierrc.js"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "next"
+  ],
+  "rules": {
+    // No need to import React when using Next.js
+    "react/react-in-jsx-scope": "off",
+    // This rule is not compatible with Next.js's <Link /> components
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "prettier/prettier": [
+      "error",
+      {},
+      {
+        "usePrettierrc": true
+      }
+    ]
+  }
+}
