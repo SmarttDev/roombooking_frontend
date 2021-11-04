@@ -1,29 +1,21 @@
-# Next.js + Tailwind CSS Example
+# Room Booking Frontend Project
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v2.2)](https://blog.tailwindcss.com/tailwindcss-2-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+The project comes with a room booking contract and a frontend developed with NextJs and Tailwindcss.
 
-It uses the new [`Just-in-Time Mode`](https://tailwindcss.com/docs/just-in-time-mode) for Tailwind CSS.
+# How to use the Dapp
 
-## Preview
+Connect with your Metamask with an Hardhat test account.
 
-Preview the example live on [StackBlitz](http://stackblitz.com/):
+Mnemonic for this Hardhat test account can be found in hardhat.config.ts file.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+Admin user for Coke company is first address and Pepsi company the second address.
 
-## Deploy your own
+You can add other address in each company's whitelist.
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
+Each address in the whitelist can reserve a room in its company calendar.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+Only the addresses that have reserved a room can cancel the reservation.
 
-## How to use
+# Contract Address
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-# or
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+Ropsten -> 0xB07432cd6f0801F8A1649931b45Fcf8ed5FB0e71
