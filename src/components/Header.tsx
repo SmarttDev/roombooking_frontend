@@ -1,13 +1,13 @@
 import { useEffect, useContext, useState } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import { SymfoniContext, CurrentAddressContext } from '../hardhat/SymfoniContext'
 import { ethers } from 'ethers'
 import RoomBooking from '../artifacts/contracts/RoomBooking.sol/RoomBooking.json'
-const roomBookAddress = process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR
 import { shorter } from 'utils'
 
 const Header = () => {
-  const [bookingCompanies, setBookingCompanies] = useState([])
+  const [bookingCompanies, setBookingCompanies] = useState<string[]>([])
   const [currentAddress, setCurrentAddress] = useContext(CurrentAddressContext)
   const { init } = useContext(SymfoniContext)
 
@@ -15,7 +15,11 @@ const Header = () => {
     const fetchCompanies = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const roomBooking = new ethers.Contract(roomBookAddress, RoomBooking.abi, provider)
+        const roomBooking = new ethers.Contract(
+          process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR as string,
+          RoomBooking.abi,
+          provider,
+        )
         try {
           setBookingCompanies(await roomBooking.getCompanies())
         } catch (err) {
@@ -55,19 +59,18 @@ const Header = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="w-full py-6 flex items-center justify-between border-b border-indigo-500 lg:border-none">
           <div className="flex items-center">
-            <a href="/">
-              <span className="sr-only">Workflow</span>
-              <Image src="/logo.png" width={30} height={50} alt="logo" />
-            </a>
+            <Link href="/" passHref>
+              <a>
+                <span className="sr-only">Workflow</span>
+                <Image src="/logo.png" width={30} height={50} alt="logo" />
+              </a>
+            </Link>
+
             <div className="hidden ml-10 space-x-8 lg:block">
               {bookingCompanies.map((company) => (
-                <a
-                  key={company}
-                  href={company.toLowerCase()}
-                  className="text-base font-medium text-black hover:text-gray-700"
-                >
-                  {company}
-                </a>
+                <Link key={company} href={company.toLowerCase()} passHref>
+                  <a className="text-base font-medium text-black hover:text-gray-700">{company}</a>
+                </Link>
               ))}
             </div>
           </div>
@@ -84,13 +87,9 @@ const Header = () => {
         </div>
         <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
           {bookingCompanies.map((company) => (
-            <a
-              key={company}
-              href={company.toLowerCase()}
-              className="text-base font-medium text-black hover:text-gray-700"
-            >
-              {company}
-            </a>
+            <Link key={company} href={company.toLowerCase()} passHref>
+              <a className="text-base font-medium text-black hover:text-gray-700">{company}</a>
+            </Link>
           ))}
         </div>
       </nav>

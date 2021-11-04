@@ -1,17 +1,22 @@
+import { NextPage } from 'next'
 import { Fragment, useEffect, useContext, useState } from 'react'
 import { useRouter } from 'next/router'
 import { RoomBookingContext, CurrentAddressContext } from '../hardhat/SymfoniContext'
 import { ethers } from 'ethers'
 import RoomBooking from '../artifacts/contracts/RoomBooking.sol/RoomBooking.json'
-const roomBookAddress = process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR
 import useToast from 'hooks/useToast'
 import { classNames, shorter } from 'utils'
+
+interface Room {
+  booked: boolean
+  owner: string
+}
 
 const HomePage: NextPage = () => {
   const router = useRouter()
   const [maxRoom, setMaxRoom] = useState()
   const [, setMaxSlot] = useState()
-  const [company, setCompany] = useState()
+  const [company, setCompany] = useState<string>()
   const [planning, setPlanning] = useState([])
   const roomBookingContract = useContext(RoomBookingContext)
   const [currentAddress] = useContext(CurrentAddressContext)
@@ -21,7 +26,11 @@ const HomePage: NextPage = () => {
     const doAsync = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const roomBooking = new ethers.Contract(roomBookAddress, RoomBooking.abi, provider)
+        const roomBooking = new ethers.Contract(
+          process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR as string,
+          RoomBooking.abi,
+          provider,
+        )
         try {
           const maxRoom = await roomBooking.MAX_ROOM()
           const maxSlot = await roomBooking.MAX_SLOT()
@@ -29,9 +38,11 @@ const HomePage: NextPage = () => {
           const planning = []
           for (let i = 0; i < maxSlot; i++) {
             if (!planning[i]) {
+              //@ts-ignore
               planning[i] = []
             }
             for (let j = 0; j < maxRoom; j++) {
+              //@ts-ignore
               planning[i].push(await roomBooking.roomlist(company, i, j))
             }
           }
@@ -58,10 +69,11 @@ const HomePage: NextPage = () => {
       try {
         const tx = await roomBookingContract.instance.reserveRoomSpace(
           String(company),
-          parseInt(slotLineIndex),
-          parseInt(roomSpaceIndex),
+          slotLineIndex,
+          roomSpaceIndex,
         )
         await tx.wait()
+        //@ts-ignore
         planning[slotLineIndex][roomSpaceIndex] = { booked: true, owner: currentAddress }
         setPlanning((oldPlanning) => [...oldPlanning])
       } catch (e: any) {
@@ -79,16 +91,20 @@ const HomePage: NextPage = () => {
     if (!roomBookingContract.instance) toastError('Error', 'Connect your wallet first')
     if (roomBookingContract.instance) {
       try {
+        //@ts-ignore
         if (planning[slotLineIndex][roomSpaceIndex].owner !== currentAddress)
           throw new Error('Operation forbidden. Not owner of this room')
         const tx = await roomBookingContract.instance.cancelRoomSpace(
           String(company),
-          parseInt(slotLineIndex),
-          parseInt(roomSpaceIndex),
+          slotLineIndex,
+          roomSpaceIndex,
         )
         await tx.wait()
+
         planning[slotLineIndex][roomSpaceIndex] = {
+          //@ts-ignore
           booked: false,
+          //@ts-ignore
           owner: '0x0000000000000000000000000000000000000000',
         }
         setPlanning((oldPlanning) => [...oldPlanning])
@@ -112,13 +128,13 @@ const HomePage: NextPage = () => {
           ))}
       </div>
       <div className="mt-6 grid grid-cols-11 gap-0.5">
-        {planning.map((slotLine, slotIndex) => {
+        {planning.map((slotLine: [], slotIndex: number) => {
           return (
             <Fragment key={slotIndex}>
               <span key={slotIndex} className="flex items-center justify-center text-center">
                 {String(slotIndex + 9).padStart(2, '0')}H
               </span>
-              {slotLine.map((room, roomIndex) => (
+              {slotLine.map((room: Room, roomIndex: number) => (
                 <button
                   key={roomIndex}
                   type="button"
@@ -127,6 +143,7 @@ const HomePage: NextPage = () => {
                     'col-span-1 flex justify-center py-6 text-sm',
                   )}
                   onClick={async (e) =>
+                    //@ts-ignore
                     planning[slotIndex][roomIndex].booked === false
                       ? await reserveRoomSpace(e, slotIndex, roomIndex)
                       : await cancelRoomSpace(e, slotIndex, roomIndex)

@@ -1,8 +1,8 @@
+import { NextPage } from 'next'
 import { useEffect, useContext, useState } from 'react'
 import { RoomBookingContext, CurrentAddressContext } from '../hardhat/SymfoniContext'
 import { ethers } from 'ethers'
 import RoomBooking from '../artifacts/contracts/RoomBooking.sol/RoomBooking.json'
-const roomBookAddress = process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR
 import useToast from 'hooks/useToast'
 import { shorter } from 'utils'
 
@@ -18,7 +18,11 @@ const HomePage: NextPage = () => {
     const fetchCompanies = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const roomBooking = new ethers.Contract(roomBookAddress, RoomBooking.abi, provider)
+        const roomBooking = new ethers.Contract(
+          process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR as string,
+          RoomBooking.abi,
+          provider,
+        )
         try {
           setBookingCompanies(await roomBooking.getCompanies())
         } catch (err) {
