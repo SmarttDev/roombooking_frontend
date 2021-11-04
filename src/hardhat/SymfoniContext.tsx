@@ -177,7 +177,7 @@ export const Symfoni: React.FC<SymfoniProps> = ({
 
     const getRoomBooking = (_provider: providers.Provider, _signer?: Signer) => {
 
-        const contractAddress = "0xB72Cff2138d9A3f4999F32d132a912C0aB6F3789"
+        const contractAddress = "0x2Ccb435Fab99EAF41c2DF6628851bcc64a3eA508"
         const instance = _signer ? RoomBooking__factory.connect(contractAddress, _signer) : RoomBooking__factory.connect(contractAddress, _provider)
         const contract: SymfoniRoomBooking = {
             instance: instance,
