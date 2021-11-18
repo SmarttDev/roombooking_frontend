@@ -17,11 +17,11 @@ const Header = () => {
     const fetchCompanies = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const roomBooking: RoomBooking = new ethers.Contract(
+        const roomBooking = new ethers.Contract(
           process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR as string,
           RoomBooking__factory.abi,
           provider,
-        )
+        ) as RoomBooking
 
         console.log(await roomBooking.MAX_ROOM())
         try {
