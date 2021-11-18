@@ -3,8 +3,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SymfoniContext, CurrentAddressContext } from '../hardhat/SymfoniContext'
 import { ethers } from 'ethers'
-import RoomBooking from '../artifacts/contracts/RoomBooking.sol/RoomBooking.json'
 import { shorter } from 'utils'
+
+import { RoomBooking__factory } from 'hardhat/typechain/factories/RoomBooking__factory'
+import { RoomBooking } from 'hardhat/typechain/RoomBooking'
 
 const Header = () => {
   const [bookingCompanies, setBookingCompanies] = useState<string[]>([])
@@ -15,11 +17,13 @@ const Header = () => {
     const fetchCompanies = async () => {
       if (typeof window.ethereum !== 'undefined') {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const roomBooking = new ethers.Contract(
+        const roomBooking: RoomBooking = new ethers.Contract(
           process.env.NEXT_PUBLIC_ROOM_BOOK_CONTRACT_ADDR as string,
-          RoomBooking.abi,
+          RoomBooking__factory.abi,
           provider,
         )
+
+        console.log(await roomBooking.MAX_ROOM())
         try {
           setBookingCompanies(await roomBooking.getCompanies())
         } catch (err) {
@@ -33,7 +37,6 @@ const Header = () => {
 
   useEffect(() => {
     const onAccountsChanged = async (accounts) => {
-      console.log('change')
       if (accounts.length) {
         setCurrentAddress(accounts[0])
       } else {
